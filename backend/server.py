@@ -12,6 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
+from google.genai import errors as genai_errors
 
 ROOT = Path(__file__).parent
 load_dotenv(ROOT / ".env")
@@ -44,6 +45,10 @@ app.add_middleware(
 # --- In-memory KBs (embeddings computed once on startup) ---
 SPEC_KB: List[dict] = []   # [{id, product_id, feature_name, technical_meaning, benefit_templates, embedding}]
 REVIEW_KB: List[dict] = [] # [{id, product_id, review_text, sentiment, inferred_use_case_cluster, embedding}]
+
+# Response cache: (product_id, use_case_text.lower().strip()) -> generate response
+_GEN_CACHE: dict = {}
+_TELL_CACHE: dict = {}
 
 
 # --- Models ---
@@ -138,33 +143,73 @@ async def whyai_generate(req: WhyAIRequest):
     if not product:
         raise HTTPException(404, "Product not found")
 
-    # 1) Extract use case (LLM)
-    uc = await asyncio.to_thread(extract_use_case, req.use_case_text)
-    cluster = uc["cluster"]
+    # Response cache to preserve LLM quota on repeated demos of the same query
+    cache_key = (req.product_id, req.use_case_text.strip().lower())
+    cached = _GEN_CACHE.get(cache_key)
+    if cached is not None:
+        # Still log the session so feedback works
+        session_id = req.session_id or str(uuid.uuid4())
+        session_doc = {
+            "id": session_id,
+            "use_case_text": req.use_case_text,
+            "use_case_cluster": cached["use_case"]["cluster"],
+            "normalized_description": cached["use_case"]["normalized_description"],
+            "product_id": req.product_id,
+            "response_json": cached["cards"],
+            "feedback": [],
+            "cached": True,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.sessions.insert_one(session_doc)
+        return {"session_id": session_id, **cached}
 
-    # 2) Embed the use-case text once
-    query_vec = await asyncio.to_thread(embed_one, req.use_case_text, "RETRIEVAL_QUERY")
+    try:
+        # 1) Extract use case (LLM)
+        uc = await asyncio.to_thread(extract_use_case, req.use_case_text)
+        cluster = uc["cluster"]
 
-    # 3) Retrieve specs (per-cluster benefit_template selected)
-    retrieved = retrieve_specs(req.product_id, cluster, query_vec, SPEC_KB)
+        # 2) Embed the use-case text once
+        query_vec = await asyncio.to_thread(embed_one, req.use_case_text, "RETRIEVAL_QUERY")
 
-    # 4) Use-case-matched review confidence
-    spec_feature_names = [r["feature_name"] for r in retrieved]
-    conf = review_confidence_by_feature(
-        req.product_id, cluster, query_vec, REVIEW_KB, spec_feature_names
-    )
+        # 3) Retrieve specs (per-cluster benefit_template selected)
+        retrieved = retrieve_specs(req.product_id, cluster, query_vec, SPEC_KB)
 
-    # 5) Generate personalized cards (LLM)
-    retrieved_for_gen = [{"feature_name": r["feature_name"],
-                          "technical_meaning": r["technical_meaning"],
-                          "benefit_template": r["benefit_template"]}
-                         for r in retrieved]
-    cards = await asyncio.to_thread(
-        generate_feature_cards, req.use_case_text, cluster, product["name"], retrieved_for_gen, conf
-    )
+        # 4) Use-case-matched review confidence
+        spec_feature_names = [r["feature_name"] for r in retrieved]
+        conf = review_confidence_by_feature(
+            req.product_id, cluster, query_vec, REVIEW_KB, spec_feature_names
+        )
+
+        # 5) Generate personalized cards (LLM)
+        retrieved_for_gen = [{"feature_name": r["feature_name"],
+                              "technical_meaning": r["technical_meaning"],
+                              "benefit_template": r["benefit_template"]}
+                             for r in retrieved]
+        cards = await asyncio.to_thread(
+            generate_feature_cards, req.use_case_text, cluster, product["name"], retrieved_for_gen, conf
+        )
+    except genai_errors.ClientError as e:
+        status = getattr(e, "code", None) or getattr(e, "status_code", 500)
+        if status == 429:
+            raise HTTPException(429, "The AI service is rate-limited right now. Please try again in a minute.")
+        logger.exception("Gemini client error: %s", e)
+        raise HTTPException(503, "The AI service returned an error. Please try again.")
+    except Exception as e:
+        logger.exception("whyai_generate failed: %s", e)
+        raise HTTPException(500, "Something went wrong generating your WhyAI insights.")
 
     # 6) Session logging
     session_id = req.session_id or str(uuid.uuid4())
+    payload = {
+        "use_case": {
+            "raw": req.use_case_text,
+            "cluster": cluster,
+            "normalized_description": uc["normalized_description"],
+        },
+        "cards": cards,
+    }
+    _GEN_CACHE[cache_key] = payload
+
     session_doc = {
         "id": session_id,
         "use_case_text": req.use_case_text,
@@ -177,15 +222,7 @@ async def whyai_generate(req: WhyAIRequest):
     }
     await db.sessions.insert_one(session_doc)
 
-    return {
-        "session_id": session_id,
-        "use_case": {
-            "raw": req.use_case_text,
-            "cluster": cluster,
-            "normalized_description": uc["normalized_description"],
-        },
-        "cards": cards,
-    }
+    return {"session_id": session_id, **payload}
 
 
 @api.post("/whyai/tell-more")
@@ -206,11 +243,24 @@ async def whyai_tell_more(req: TellMoreRequest):
     benefit_template = feature["benefit_templates"].get(req.cluster) \
         or next(iter(feature["benefit_templates"].values()))
 
-    text = await asyncio.to_thread(
-        tell_me_more,
-        req.use_case_text, req.cluster, product["name"], req.feature_name,
-        feature["technical_meaning"], benefit_template,
-    )
+    cache_key = (req.product_id, req.feature_name, req.cluster, req.use_case_text.strip().lower())
+    cached = _TELL_CACHE.get(cache_key)
+    if cached is not None:
+        return {"explanation": cached}
+
+    try:
+        text = await asyncio.to_thread(
+            tell_me_more,
+            req.use_case_text, req.cluster, product["name"], req.feature_name,
+            feature["technical_meaning"], benefit_template,
+        )
+    except genai_errors.ClientError as e:
+        status = getattr(e, "code", None) or getattr(e, "status_code", 500)
+        if status == 429:
+            raise HTTPException(429, "The AI service is rate-limited right now. Please try again in a minute.")
+        logger.exception("Gemini tell-more error: %s", e)
+        raise HTTPException(503, "The AI service returned an error.")
+    _TELL_CACHE[cache_key] = text
     return {"explanation": text}
 
 

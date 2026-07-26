@@ -259,7 +259,11 @@ export default function WhyAISidebar({ product }) {
       setResult(res);
       setUseCase({ text, cluster: res.use_case.cluster });
     } catch (e) {
-      toast.error("Couldn't generate WhyAI insights. Try again.");
+      const status = e?.response?.status;
+      const msg = status === 429
+        ? "AI service is busy right now — try again in a minute."
+        : "Couldn't generate WhyAI insights. Try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
