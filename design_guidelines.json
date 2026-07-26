@@ -1,0 +1,150 @@
+{
+  "project_name": "WhyAI",
+  "app_type": "hybrid_fullstack",
+  "theme_strategy": "Light Theme for Store (functional, familiar), Soft Tinted Light Theme with Vibrant Accents for WhyAI Sidebar (distinct, intelligent).",
+  "typography": {
+    "store_headings": {
+      "font": "Manrope",
+      "classes": "font-sans font-bold tracking-tight text-gray-900"
+    },
+    "store_body": {
+      "font": "IBM Plex Sans",
+      "classes": "font-sans text-gray-600"
+    },
+    "why_ai_sidebar": {
+      "font": "Outfit",
+      "classes": "font-sans tracking-tight"
+    },
+    "rules": [
+      "Avoid Inter for headings.",
+      "Store typography should feel structured and highly readable, mimicking a large e-commerce marketplace.",
+      "WhyAI sidebar typography should feel modern, geometric, and 'smart'.",
+      "Headings max size text-4xl to text-5xl on desktop."
+    ]
+  },
+  "colors": {
+    "store": {
+      "background": "#FFFFFF",
+      "surface": "#FFFFFF",
+      "text_primary": "#111827",
+      "text_secondary": "#4B5563",
+      "links": "#0066CC",
+      "cta": "#FF9900",
+      "cta_hover": "#E68A00",
+      "border": "#E5E7EB"
+    },
+    "why_ai_sidebar": {
+      "background": "rgba(255, 255, 255, 0.95)",
+      "text_primary": "#0F172A",
+      "gradient_accent": "linear-gradient(to right, #6366F1, #06B6D4)",
+      "card_bg": "#FFFFFF",
+      "border": "rgba(99, 102, 241, 0.1)"
+    },
+    "confidence_badges": {
+      "green": {
+        "bg": "bg-emerald-100",
+        "text": "text-emerald-800",
+        "border": "border-emerald-200"
+      },
+      "yellow": {
+        "bg": "bg-amber-100",
+        "text": "text-amber-800",
+        "border": "border-amber-200"
+      },
+      "orange": {
+        "bg": "bg-orange-100",
+        "text": "text-orange-800",
+        "border": "border-orange-200"
+      }
+    },
+    "use_case_chip": {
+      "bg": "bg-indigo-50",
+      "text": "text-indigo-700",
+      "border": "border-indigo-100"
+    }
+  },
+  "visual_enhancers": {
+    "store_cards": "Flat white background, subtle border (border-gray-200), hover:shadow-md hover:-translate-y-1 transition-all duration-200.",
+    "sidebar_panel": "backdrop-blur-2xl shadow-[-10px_0_30px_rgba(0,0,0,0.05)] border-l border-indigo-100.",
+    "ai_feature_cards": "Rounded-xl, bg-white, shadow-sm, with a delicate 1px gradient-like border effect (ring-1 ring-indigo-50).",
+    "collapsed_tab": "Gradient background (from-indigo-500 to-cyan-400) text-white rounded-l-xl shadow-lg."
+  },
+  "component_name": {
+    "store_header": "Header with 'WhyAI Demo Store' wordmark, search bar placeholder, and category navigation.",
+    "product_grid": "Responsive grid of ProductCards.",
+    "product_card": "Image, Title, Price, Rating, and an 'AI Powered' badge.",
+    "pdp_layout": "Product Detail Page with 2 columns: Image gallery (left) and Product Info / Add to Cart / 'About this item' AI bullets (right).",
+    "why_ai_sidebar": "Persistent overlaid panel on the right.",
+    "use_case_input": "Free-text input with rotating placeholders.",
+    "loading_state": "Sequential message loader (e.g., 'Extracting intent...', 'Scanning specs...', 'Generating insights...').",
+    "feature_card": "AI generated personalized benefit with confidence badge, 'Tell me more' accordion, and thumbs up/down.",
+    "feedback_toast": "Sonner toast triggered on thumbs up/down."
+  },
+  "grids": {
+    "store_home": "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 md:px-8",
+    "pdp": "grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto px-4 py-8"
+  },
+  "layouts": {
+    "shell": "Standard e-commerce flow with fixed header. Main content area takes full width.",
+    "sidebar": "fixed right-0 top-0 h-screen w-full sm:w-[400px] z-50 flex flex-col"
+  },
+  "motion": {
+    "sidebar_toggle": "Use framer-motion. Slide in from right (x: '100%' to x: 0) with a spring transition.",
+    "collapsed_tab_pulse": "Subtle continuous scale pulse (scale 1 to 1.05) or box-shadow pulse to attract attention.",
+    "list_stagger": "Feature cards inside the sidebar must appear with a staggered fade-up animation.",
+    "hover_effects": "Product cards lift up slightly on hover. CTA buttons have a slight scale down on active/click."
+  },
+  "accessibility": {
+    "contrast": "Ensure all text, especially orange CTAs and blue links, meet at least 4.5:1 contrast ratio against white background.",
+    "focus": "All interactive elements must have focus-visible ring (ring-2 ring-indigo-500 ring-offset-2).",
+    "aria": "Add aria-expanded to the sidebar toggle, aria-live to the loading state."
+  },
+  "media": {
+    "images": "Product images should have a clean, light or white background to mimic authentic e-commerce catalogs. Use aspect-square object-contain for product listing images."
+  },
+  "3d_libraries": {
+    "instructions": "Not required for this project to maintain a clean marketplace feel. Rely on framer-motion for smooth UI transitions."
+  },
+  "image_urls": {
+    "smartphones": {
+      "description": "Modern smartphones for the e-commerce catalog.",
+      "urls": [
+        "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NjZ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBzbWFydHBob25lfGVufDB8fHx8MTc4NTA5NjcwOHww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1634403665481-74948d815f03?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NjZ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBzbWFydHBob25lfGVufDB8fHx8MTc4NTA5NjcwOHww&ixlib=rb-4.1.0&q=85"
+      ]
+    },
+    "laptops": {
+      "description": "Modern laptops for the catalog.",
+      "urls": [
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBsYXB0b3B8ZW58MHx8fHwxNzg1MDk2NzA4fDA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBsYXB0b3B8ZW58MHx8fHwxNzg1MDk2NzA4fDA&ixlib=rb-4.1.0&q=85"
+      ]
+    },
+    "smartwatches": {
+      "description": "Smartwatches for the catalog.",
+      "urls": [
+        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHw0fHxzbWFydHdhdGNofGVufDB8fHx8MTc4NTA5NjcwOHww&ixlib=rb-4.1.0&q=85"
+      ]
+    }
+  },
+  "instructions_to_main_agent": [
+    "Build a Next.js or React shell with standard e-commerce routing: Home -> Category -> PDP.",
+    "Implement the 'WhyAI' sidebar as a fixed, global component that sits above the page content. It should maintain its state (use-case) across route changes.",
+    "Mock the 2-layer RAG system using predefined JSON datasets for a few key products.",
+    "For the loading state in the sidebar, use a `useEffect` with timeouts to cycle through 3 sequential text messages before displaying the generated feature cards.",
+    "The 'Tell me more' should use an accordion or a simple collapsible div.",
+    "Use Lucide-react for all icons (thumbs up, thumbs down, chevron, search, cart).",
+    "Integrate 'sonner' for toast notifications when user clicks thumbs up/down."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms.",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style.",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯 etc for icons. Use Lucide icons instead.",
+    "Every interaction needs micro-animations - hover states, transitions, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "All interactive and key informational elements MUST include a data-testid attribute to facilitate robust automated testing.",
+    "DO NOT use complete transparent background in header, overlays, any surface that has content under it.",
+    "Use sonner for toasts notifications."
+  ]
+}
