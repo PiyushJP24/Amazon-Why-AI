@@ -14,21 +14,29 @@ const NAV_CATS = [
 export default function Header() {
   return (
     <header data-testid="site-header" className="w-full sticky top-0 z-40 shadow-sm">
-      {/* Top bar (dark) */}
-      <div className="bg-[#0F1720] text-white">
-        <div className="max-w-[1400px] mx-auto px-3 md:px-5 py-2 flex items-center gap-3 md:gap-5">
+      {/* Top bar (Amazon-style navy) */}
+      <div className="bg-[#131A22] text-white">
+        <div className="max-w-[1500px] mx-auto px-3 md:px-5 py-2 flex items-center gap-3 md:gap-4">
           <Link
             to="/"
             data-testid="header-logo"
-            className="flex items-center gap-1.5 shrink-0 border border-transparent hover:border-white/40 rounded-md px-2 py-1 transition-colors"
+            className="flex items-end shrink-0 border border-transparent hover:border-white/40 rounded-md px-2 py-1 transition-colors -mb-0.5"
           >
-            <div className="w-7 h-7 rounded-md bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-slate-900" strokeWidth={2.8} fill="currentColor" />
+            <div className="font-store-heading font-extrabold text-[26px] leading-none tracking-tight text-white lowercase relative">
+              amazon
+              <svg
+                viewBox="0 0 100 20"
+                className="absolute -bottom-1.5 left-2 w-[85%] h-3 text-amber-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              >
+                <path d="M2 6 Q 50 22, 95 4" />
+                <path d="M88 2 L 95 4 L 90 10" strokeWidth="2.5" />
+              </svg>
             </div>
-            <div className="font-store-heading font-extrabold text-[19px] leading-none tracking-tight">
-              nex<span className="text-amber-400">Kart</span>
-              <span className="block text-[10px] font-medium text-slate-400 mt-0.5">.in</span>
-            </div>
+            <span className="text-[13px] font-medium text-white ml-0.5 leading-none pb-0.5">.in</span>
           </Link>
 
           <button className="hidden md:flex items-center gap-1 shrink-0 text-xs text-slate-200 hover:border-white border border-transparent rounded-md px-2 py-1 transition-colors">
@@ -47,7 +55,7 @@ export default function Header() {
               <input
                 data-testid="header-search"
                 type="text"
-                placeholder="Search NexKart.in"
+                placeholder="Search Amazon.in"
                 className="flex-1 px-3 py-2 text-sm outline-none min-w-0"
               />
               <button className="bg-amber-400 hover:bg-amber-500 active:scale-[0.98] transition-[background-color,transform] px-4 h-full py-2.5">
@@ -79,9 +87,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Sub-nav (slate) */}
-      <div className="bg-[#1B2733] text-slate-100">
-        <div className="max-w-[1400px] mx-auto px-3 md:px-5 flex items-center gap-1 overflow-x-auto no-scrollbar py-1.5">
+      {/* Sub-nav (Amazon-style slightly lighter) */}
+      <div className="bg-[#232F3E] text-slate-100">
+        <div className="max-w-[1500px] mx-auto px-3 md:px-5 flex items-center gap-1 overflow-x-auto no-scrollbar py-1.5">
           <button className="flex items-center gap-1 px-2 py-1 text-[13px] font-medium hover:border-white border border-transparent rounded-md transition-colors">
             <Menu className="w-4 h-4" /> All
           </button>

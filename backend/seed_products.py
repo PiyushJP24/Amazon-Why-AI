@@ -23,7 +23,7 @@ PRODUCTS = [
         "price_inr": 118999,
         "rating": 4.3,
         "review_count": 1687,
-        "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Titanium build, S Pen, Galaxy AI, 200MP camera",
         "features": [
             {
@@ -107,7 +107,7 @@ PRODUCTS = [
         "price_inr": 31999,
         "rating": 4.3,
         "review_count": 942,
-        "image": "https://images.unsplash.com/photo-1634403665481-74948d815f03?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Flagship-feeling mid-ranger with on-device AI",
         "features": [
             {
@@ -191,7 +191,7 @@ PRODUCTS = [
         "price_inr": 189999,
         "rating": 4.4,
         "review_count": 512,
-        "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Copilot+ PC with 48 TOPS NPU and 22-hour battery",
         "features": [
             {
@@ -275,7 +275,7 @@ PRODUCTS = [
         "price_inr": 129999,
         "rating": 4.2,
         "review_count": 386,
-        "image": "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Snapdragon X, AI noise-cancellation, remote-work ready",
         "features": [
             {
@@ -359,7 +359,7 @@ PRODUCTS = [
         "price_inr": 89990,
         "rating": 4.5,
         "review_count": 2145,
-        "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1461151304267-38535e780c79?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "NQ4 AI Processor, upscaling, Vision AI Companion",
         "features": [
             {
@@ -443,7 +443,7 @@ PRODUCTS = [
         "price_inr": 46900,
         "rating": 4.5,
         "review_count": 3120,
-        "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Hypertension alerts, Sleep Score, Workout Buddy, 24h battery",
         "features": [
             {
@@ -527,7 +527,7 @@ PRODUCTS = [
         "price_inr": 24990,
         "rating": 4.1,
         "review_count": 678,
-        "image": "https://images.unsplash.com/photo-1508296695146-257a814070b4?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1577803645773-f96470509666?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Meta AI, real-time translation, 12MP camera, open-ear audio",
         "features": [
             {
@@ -611,7 +611,7 @@ PRODUCTS = [
         "price_inr": 42990,
         "rating": 4.3,
         "review_count": 1830,
-        "image": "https://images.unsplash.com/photo-1631545308451-8de11a68eb15?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1636214948365-0d38b6b8dc23?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "AI Dual Inverter, voice control, energy-saving AI modes",
         "features": [
             {
@@ -695,7 +695,7 @@ PRODUCTS = [
         "price_inr": 54990,
         "rating": 4.2,
         "review_count": 921,
-        "image": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "AI cooling, humidity balance, app-connected freshness",
         "features": [
             {
@@ -779,7 +779,7 @@ PRODUCTS = [
         "price_inr": 38990,
         "rating": 4.4,
         "review_count": 1245,
-        "image": "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
+        "image": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?crop=entropy&cs=srgb&fm=jpg&w=800&q=80",
         "tagline": "Auto water level, fabric-sensitive AI, quiet operation",
         "features": [
             {
@@ -862,6 +862,14 @@ def get_product(product_id: str):
         if p["id"] == product_id:
             return p
     return None
+
+
+# Extend with the second batch of products
+try:
+    from seed_products_v2 import NEW_PRODUCTS  # noqa: E402
+    PRODUCTS.extend(NEW_PRODUCTS)
+except Exception:
+    pass
 
 
 def all_products_summary():

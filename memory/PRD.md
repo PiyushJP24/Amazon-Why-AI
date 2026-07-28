@@ -33,28 +33,26 @@ Amazon India's AI Store. Two parts:
 - Frontend: React 19 + React Router + Tailwind + shadcn/ui + framer-motion + sonner
 - Embeddings cached to disk at `/app/backend/data/embedding_cache.json`
 
-## What's been implemented — 2026-02-XX (MVP)
-- 10 seeded products with 5 features × 8 cluster benefit_templates each (50 specs)
-- 171 paraphrased seeded reviews tagged with cluster + sentiment
-- Two-layer RAG with Gemini embeddings + cosine similarity
-- **Per-feature confidence** (v2): each feature card now shows its own confidence %
-  computed from the top-K most feature-relevant reviews (by cosine to feature embedding),
-  further filtered by use-case cluster match. Falls back through
-  feature+usecase → feature-only → product_overall with clear UI copy.
-- Endpoints: /api/products, /api/products/{id}, /api/whyai/generate,
-  /api/whyai/tell-more, /api/whyai/feedback, /api/whyai/health
-- Store rebranded to **NexKart** (marketplace shell). WhyAI is a named feature *inside*
-  the store's "The AI Lab" section — never the store itself.
-- New Amazon-India-style layout: dark top nav (logo/deliver-to/search/cart),
-  sub-nav with "The AI Lab" badge, breadcrumb, dark hero, 6 category tiles on
-  circular podium, "Explore by Use Case" tile row (6 tiles), per-category
-  "Best Selling AI [Category] | Shop now" horizontal carousels.
-- WhyAI sidebar: collapsed pulse tab → panel → free-text input with rotating placeholders
-  → 3-step loading state → results state with feature cards
-- Persistent use-case chip "Using: … · change" across product navigation
-- Sonner toast on feedback
-- Response cache on backend (product_id + use_case) to preserve LLM quota
-- Explicit 429 handling with friendly UI toast
+## What's been implemented — 2026-02-XX (Iteration 3)
+- **18 seeded products** (up from 10) across 6 categories: Smartphones (3), Laptops (3),
+  Home Appliances (4), Televisions (3), Smartwatches (3), Smart Glasses (2). 90 total
+  spec entries × 8 cluster benefit_templates each.
+- **307 seeded reviews** (up from 171) tagged with cluster + sentiment.
+- Store rebranded back to **Amazon.in** (portfolio prototype — Amazon wordmark + swoosh)
+  while keeping WhyAI as the sidebar feature name and "The AI Lab" as the AI section.
+- **Amazon.in-style PDP** with the real 3-column layout: thumbnail strip + main image (left),
+  title + brand-store link + rating + "5K+ bought" + discount % + price + M.R.P + EMI +
+  Offers grid (No Cost EMI, Cashback, Bank Offer, Partner Offers) + badges strip
+  (10 days Service, Free Delivery, 1 Year Warranty, Pay on Delivery, Top Brand,
+  Amazon Delivered) + colour swatches + spec table + About this item + Customers-keep
+  green box (middle), and the buy box (Prime perk, ₹price+MRP, FREE delivery date, In stock,
+  Add to Cart, Buy Now, Ships from Amazon, Sold by, Payment, Gift options,
+  Add-a-Protection-Plan checkboxes, Add to Wish List) on the right.
+- **Product image audit**: replaced Samsung S25 Ultra (was showing iOS), Lenovo Yoga
+  (was showing a MacBook silhouette), and other placeholders with generic Unsplash
+  category shots that don't leak competing OS/logo.
+- Per-feature two-layer RAG confidence (from iteration 2) — every card has its own
+  differentiated confidence score with scope-aware UI copy.
 
 ## Not-yet-implemented (P1 backlog)
 - Per-feature review-level confidence (currently product-level aggregated). Would need

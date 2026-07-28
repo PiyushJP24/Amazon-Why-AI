@@ -234,7 +234,7 @@ export default function Home() {
 
       <footer className="border-t border-slate-200 py-8 mt-6 bg-white">
         <div className="max-w-[1400px] mx-auto px-3 md:px-5 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-3">
-          <div>© NexKart · The AI Lab prototype</div>
+          <div>© 1996-2026, Amazon.com, Inc. or its affiliates · The AI Lab</div>
           <div className="flex items-center gap-1">
             <Zap className="w-3 h-3 text-amber-500" />
             WhyAI · two-layer RAG · Gemini

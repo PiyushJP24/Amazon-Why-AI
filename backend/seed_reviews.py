@@ -213,9 +213,16 @@ REVIEWS = {
 
 
 def flatten_all_reviews():
+    # Merge in the v2 reviews if available
+    try:
+        from seed_reviews_v2 import NEW_REVIEWS  # noqa: E402
+        all_reviews = {**REVIEWS, **NEW_REVIEWS}
+    except Exception:
+        all_reviews = REVIEWS
+
     out = []
     idx = 0
-    for product_id, revs in REVIEWS.items():
+    for product_id, revs in all_reviews.items():
         for text, sentiment, cluster in revs:
             out.append({
                 "id": f"rev-{idx}",
