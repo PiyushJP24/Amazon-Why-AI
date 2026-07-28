@@ -247,12 +247,13 @@ Return STRICT JSON with this shape:
     out = []
     for card in cards:
         fname = card.get("feature_name", "")
-        conf = review_confidence.get(fname, {"pct": 0, "fallback": True, "sample_size": 0})
+        conf = review_confidence.get(fname, {"pct": 0, "fallback": True, "sample_size": 0, "scope": "product_overall"})
         out.append({
             "feature_name": fname,
             "personalized_benefit": card.get("personalized_benefit", ""),
             "confidence_pct": conf["pct"],
             "confidence_fallback": conf["fallback"],
+            "confidence_scope": conf.get("scope", "product_overall"),
             "sample_size": conf["sample_size"],
         })
     return out

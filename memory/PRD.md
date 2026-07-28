@@ -37,13 +37,20 @@ Amazon India's AI Store. Two parts:
 - 10 seeded products with 5 features × 8 cluster benefit_templates each (50 specs)
 - 171 paraphrased seeded reviews tagged with cluster + sentiment
 - Two-layer RAG with Gemini embeddings + cosine similarity
+- **Per-feature confidence** (v2): each feature card now shows its own confidence %
+  computed from the top-K most feature-relevant reviews (by cosine to feature embedding),
+  further filtered by use-case cluster match. Falls back through
+  feature+usecase → feature-only → product_overall with clear UI copy.
 - Endpoints: /api/products, /api/products/{id}, /api/whyai/generate,
   /api/whyai/tell-more, /api/whyai/feedback, /api/whyai/health
-- Home page (hero, category tabs, product grid), product detail page (image, price,
-  ratings, About-this-item bullets, buy/cart CTAs)
+- Store rebranded to **NexKart** (marketplace shell). WhyAI is a named feature *inside*
+  the store's "The AI Lab" section — never the store itself.
+- New Amazon-India-style layout: dark top nav (logo/deliver-to/search/cart),
+  sub-nav with "The AI Lab" badge, breadcrumb, dark hero, 6 category tiles on
+  circular podium, "Explore by Use Case" tile row (6 tiles), per-category
+  "Best Selling AI [Category] | Shop now" horizontal carousels.
 - WhyAI sidebar: collapsed pulse tab → panel → free-text input with rotating placeholders
-  → 3-step loading state → results state with feature cards (confidence badge, tell-more
-  expand, thumbs up/down)
+  → 3-step loading state → results state with feature cards
 - Persistent use-case chip "Using: … · change" across product navigation
 - Sonner toast on feedback
 - Response cache on backend (product_id + use_case) to preserve LLM quota

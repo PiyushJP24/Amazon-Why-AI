@@ -17,6 +17,7 @@ PRODUCTS = [
     # 1. Samsung Galaxy S25 Ultra
     {
         "id": "samsung-galaxy-s25-ultra",
+        "brand": "Samsung",
         "name": "Samsung Galaxy S25 Ultra 5G AI Smartphone",
         "category": "Smartphones",
         "price_inr": 118999,
@@ -100,6 +101,7 @@ PRODUCTS = [
     # 2. OnePlus Nord 6
     {
         "id": "oneplus-nord-6",
+        "brand": "OnePlus",
         "name": "OnePlus Nord 6",
         "category": "Smartphones",
         "price_inr": 31999,
@@ -183,6 +185,7 @@ PRODUCTS = [
     # 3. HP OmniBook Ultra
     {
         "id": "hp-omnibook-ultra",
+        "brand": "HP",
         "name": "HP OmniBook Ultra 14",
         "category": "Laptops",
         "price_inr": 189999,
@@ -266,6 +269,7 @@ PRODUCTS = [
     # 4. Lenovo Yoga Slim 7x
     {
         "id": "lenovo-yoga-slim-7x",
+        "brand": "Lenovo",
         "name": "Lenovo Yoga Slim 7x Copilot+ PC",
         "category": "Laptops",
         "price_inr": 129999,
@@ -349,6 +353,7 @@ PRODUCTS = [
     # 5. Samsung Vision AI QLED TV
     {
         "id": "samsung-vision-ai-qled-tv",
+        "brand": "Samsung",
         "name": "Samsung 138cm (55\") Vision AI QLED 4K TV",
         "category": "Televisions",
         "price_inr": 89990,
@@ -432,6 +437,7 @@ PRODUCTS = [
     # 6. Apple Watch Series 11
     {
         "id": "apple-watch-series-11",
+        "brand": "Apple",
         "name": "Apple Watch Series 11",
         "category": "Smartwatches",
         "price_inr": 46900,
@@ -515,6 +521,7 @@ PRODUCTS = [
     # 7. Ray-Ban Meta Smart Glasses
     {
         "id": "rayban-meta-smart-glasses",
+        "brand": "Ray-Ban Meta",
         "name": "Ray-Ban Meta Smart Glasses",
         "category": "Smart Glasses",
         "price_inr": 24990,
@@ -598,6 +605,7 @@ PRODUCTS = [
     # 8. LG AI Convertible AC
     {
         "id": "lg-ai-convertible-ac",
+        "brand": "LG",
         "name": "LG AI Convertible Series 1.5 Ton Inverter AC",
         "category": "Home Appliances",
         "price_inr": 42990,
@@ -681,6 +689,7 @@ PRODUCTS = [
     # 9. Haier Smart Sense Fridge
     {
         "id": "haier-smart-sense-fridge",
+        "brand": "Haier",
         "name": "Haier Smart Sense AI Series 531L Fridge",
         "category": "Home Appliances",
         "price_inr": 54990,
@@ -764,6 +773,7 @@ PRODUCTS = [
     # 10. Bosch AI Active Water Plus Washing Machine
     {
         "id": "bosch-ai-washing-machine",
+        "brand": "Bosch",
         "name": "Bosch AI Active Water Plus 8kg Washing Machine",
         "category": "Home Appliances",
         "price_inr": 38990,
@@ -858,6 +868,7 @@ def all_products_summary():
     """Returns product list without heavy nested features (for grid page)."""
     return [{
         "id": p["id"],
+        "brand": p.get("brand", ""),
         "name": p["name"],
         "category": p["category"],
         "price_inr": p["price_inr"],

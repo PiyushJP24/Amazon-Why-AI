@@ -20,7 +20,7 @@ load_dotenv(ROOT / ".env")
 from seed_products import PRODUCTS, all_products_summary, get_product, CLUSTERS  # noqa: E402
 from seed_reviews import flatten_all_reviews  # noqa: E402
 from gemini_client import embed_texts, embed_one, extract_use_case, generate_feature_cards, tell_me_more  # noqa: E402
-from rag import retrieve_specs, review_confidence_by_feature  # noqa: E402
+from rag import retrieve_specs, review_confidence_per_feature  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("whyai")
@@ -171,16 +171,15 @@ async def whyai_generate(req: WhyAIRequest):
         # 2) Embed the use-case text once
         query_vec = await asyncio.to_thread(embed_one, req.use_case_text, "RETRIEVAL_QUERY")
 
-        # 3) Retrieve specs (per-cluster benefit_template selected)
+        # 3) Retrieve specs (per-cluster benefit_template selected, includes embeddings)
         retrieved = retrieve_specs(req.product_id, cluster, query_vec, SPEC_KB)
 
-        # 4) Use-case-matched review confidence
-        spec_feature_names = [r["feature_name"] for r in retrieved]
-        conf = review_confidence_by_feature(
-            req.product_id, cluster, query_vec, REVIEW_KB, spec_feature_names
+        # 4) Per-feature use-case-matched review confidence (two-layer RAG)
+        conf = review_confidence_per_feature(
+            req.product_id, cluster, query_vec, REVIEW_KB, retrieved
         )
 
-        # 5) Generate personalized cards (LLM)
+        # 5) Generate personalized cards (LLM) — strip embeddings before passing
         retrieved_for_gen = [{"feature_name": r["feature_name"],
                               "technical_meaning": r["technical_meaning"],
                               "benefit_template": r["benefit_template"]}

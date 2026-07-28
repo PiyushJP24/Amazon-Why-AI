@@ -150,12 +150,19 @@ function FeatureCard({ card, index, product, useCaseData, sessionId }) {
         {card.personalized_benefit}
       </div>
 
-      <div className={`mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium border ${style.bg} ${style.text} ${style.border}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-        {card.confidence_fallback
-          ? `${card.confidence_pct}% overall buyer feedback (limited use-case data)`
-          : `${card.confidence_pct}% of buyers with a similar use case rated this positively`}
-        <span className="text-slate-400 ml-1">· n={card.sample_size}</span>
+      <div className={`mt-3 inline-flex items-start gap-2 px-2.5 py-1 rounded-full text-xs font-medium border ${style.bg} ${style.text} ${style.border}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${style.dot} mt-1`} />
+        <span>
+          {card.confidence_scope === "feature+usecase" && (
+            <>{card.confidence_pct}% of buyers with a similar use case rated this feature positively <span className="text-slate-400">· n={card.sample_size}</span></>
+          )}
+          {card.confidence_scope === "feature" && (
+            <>{card.confidence_pct}% of buyers rated this feature positively <span className="text-slate-400">· n={card.sample_size}</span></>
+          )}
+          {card.confidence_scope === "product_overall" && (
+            <>Based on overall product reviews — limited feature-specific data available <span className="text-slate-400">· {card.confidence_pct}% (n={card.sample_size})</span></>
+          )}
+        </span>
       </div>
 
       <div className="mt-3 flex items-center justify-between">
@@ -443,9 +450,9 @@ export default function WhyAISidebar({ product }) {
                       sessionId={result.session_id}
                     />
                   ))}
-                  <div className="pt-2 pb-6 text-center text-[11px] text-slate-400 font-whyai">
-                    Grounded in this product's specs · powered by two-layer RAG
-                  </div>
+        <div className="pt-2 pb-6 text-center text-[11px] text-slate-400 font-whyai">
+          Grounded in this product's specs · per-feature two-layer RAG
+        </div>
                 </div>
               )}
             </div>
