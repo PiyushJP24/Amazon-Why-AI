@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 from google import genai
-from google.genai import types
+from google.genai import types, errors as genai_errors
 
 logger = logging.getLogger(__name__)
 
@@ -55,9 +55,41 @@ def get_client():
     return _client
 
 
-TEXT_MODEL = os.environ.get("TEXT_MODEL", "gemini-flash-latest")
+TEXT_MODEL = os.environ.get("TEXT_MODEL", "gemini-3.5-flash")
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "gemini-embedding-001")
 EMBED_DIM = 768
+
+
+def _generate_with_retry(**kwargs):
+    """Wrap client.models.generate_content with retry on transient 503 UNAVAILABLE.
+    Gemini's error message explicitly says these are 'usually temporary'."""
+    client = get_client()
+    # Model fallbacks: primary → same-family stable → widely-supported latest alias.
+    primary = kwargs.pop("model", TEXT_MODEL)
+    fallbacks = [primary, "gemini-3.5-flash-lite", "gemini-flash-latest"]
+    # De-dupe while preserving order
+    seen = set()
+    ordered = [m for m in fallbacks if not (m in seen or seen.add(m))]
+
+    last_err = None
+    for model in ordered:
+        for attempt in range(3):
+            try:
+                return client.models.generate_content(model=model, **kwargs)
+            except genai_errors.ServerError as e:
+                code = getattr(e, "code", None) or getattr(e, "status_code", 500)
+                if code == 503:
+                    delay = 0.8 * (2 ** attempt)  # 0.8s, 1.6s, 3.2s
+                    logger.warning("503 on %s (attempt %d), backing off %.1fs", model, attempt + 1, delay)
+                    last_err = e
+                    time.sleep(delay)
+                    continue
+                raise
+            except genai_errors.ClientError:
+                raise
+        logger.warning("Model %s exhausted retries — trying next fallback", model)
+    # All fallbacks exhausted
+    raise last_err if last_err else RuntimeError("Gemini generate_content failed with no captured error")
 
 
 def embed_texts(texts: List[str], task_type: str = "RETRIEVAL_DOCUMENT") -> List[List[float]]:
@@ -154,7 +186,7 @@ Return STRICT JSON with keys:
 User text: "{free_text}"
 """
     client = get_client()
-    resp = client.models.generate_content(
+    resp = _generate_with_retry(
         model=TEXT_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -225,7 +257,7 @@ Return STRICT JSON with this shape:
 }}
 """
     client = get_client()
-    resp = client.models.generate_content(
+    resp = _generate_with_retry(
         model=TEXT_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -284,7 +316,7 @@ or capabilities that are not present.
 Return plain text, 3 sentences.
 """
     client = get_client()
-    resp = client.models.generate_content(
+    resp = _generate_with_retry(
         model=TEXT_MODEL,
         contents=prompt,
         config=types.GenerateContentConfig(temperature=0.5),
