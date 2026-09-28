@@ -235,13 +235,10 @@ export default function WhyAISidebar({ product }) {
     PLACEHOLDER_ROTATION_BY_CATEGORY[product.category] ||
     PLACEHOLDER_ROTATION_BY_CATEGORY["Smartphones"];
 
-  // Auto-run if we already have a use case from another product
-  useEffect(() => {
-    if (useCase?.text && open && !result && !loading) {
-      runGenerate(useCase.text);
-    }
-    // eslint-disable-next-line
-  }, [open, product.id]);
+  // No auto-run: opening the panel on a new product page should NOT
+  // fire generate. The user must type + submit each time. The backend
+  // already caches by (product_id, use_case_text) so repeat submissions
+  // of the same query on the same product return instantly.
 
   // Loading step animation
   useEffect(() => {
@@ -345,13 +342,15 @@ export default function WhyAISidebar({ product }) {
               </button>
             </div>
 
-            {/* Persistent use-case chip */}
-            {useCase?.text && !editing && (
+            {/* Persistent use-case chip — only visible after we have a result
+                for THIS product. Opening the panel on a new product page shows
+                the empty input form instead. */}
+            {result && !editing && (
               <div className="px-5 py-3 border-b border-slate-100 shrink-0">
                 <div className="flex items-start gap-2 rounded-xl bg-indigo-50 text-indigo-800 px-3 py-2 text-[13px] border border-indigo-100">
                   <div className="flex-1">
                     <span className="text-indigo-500 font-medium">Using:</span>{" "}
-                    <span className="font-whyai">{useCase.text}</span>
+                    <span className="font-whyai">{result.use_case.raw}</span>
                   </div>
                   <button
                     onClick={onChangeUseCase}
@@ -365,8 +364,10 @@ export default function WhyAISidebar({ product }) {
             )}
 
             <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-4">
-              {/* Input state */}
-              {(!useCase?.text || editing) && !loading && !result && (
+              {/* Input state — shown by default on every new page load,
+                  even if a use case exists in session from another product.
+                  Input starts empty; user must type + submit. */}
+              {!loading && !result && (
                 <form onSubmit={onSubmit} className="whyai-fadeup">
                   <div className="font-whyai text-[22px] font-semibold text-slate-900 leading-tight">
                     How will you mainly use this?

@@ -55,7 +55,7 @@ def get_client():
     return _client
 
 
-TEXT_MODEL = os.environ.get("TEXT_MODEL", "gemini-3.5-flash")
+TEXT_MODEL = os.environ.get("TEXT_MODEL", "gemini-3.5-flash-lite")
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "gemini-embedding-001")
 EMBED_DIM = 768
 
@@ -64,9 +64,11 @@ def _generate_with_retry(**kwargs):
     """Wrap client.models.generate_content with retry on transient 503 UNAVAILABLE.
     Gemini's error message explicitly says these are 'usually temporary'."""
     client = get_client()
-    # Model fallbacks: primary → same-family stable → widely-supported latest alias.
+    # Primary: gemini-3.5-flash-lite (15 rpm / 500 rpd on free tier).
+    # Fallback: gemini-3.5-flash (5 rpm / 20 rpd) — used only if the primary
+    # is exhausted after retries.
     primary = kwargs.pop("model", TEXT_MODEL)
-    fallbacks = [primary, "gemini-3.5-flash-lite", "gemini-flash-latest"]
+    fallbacks = [primary, "gemini-3.5-flash"]
     # De-dupe while preserving order
     seen = set()
     ordered = [m for m in fallbacks if not (m in seen or seen.add(m))]
